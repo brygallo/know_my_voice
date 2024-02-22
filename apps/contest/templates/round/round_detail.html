@@ -1,0 +1,118 @@
+{% extends "base/base_detail.html" %}
+
+{% block content_title %}
+
+{% endblock %}
+
+{% block navigation_extra %}
+    {% include "base/nav_with_url.html" with url=object.get_list_url label='Rondas' %}
+    {% include "base/nav_without_url.html" with label=object %}
+{% endblock %}
+
+{% block content %}
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <div>
+                <h6 class="m-0 font-weight-bold text-primary d-inline">Ronda # {{ object.pk }}</h6>
+            </div>
+            <div class="dropdown no-arrow">
+                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                     aria-labelledby="dropdownMenuLink" style="">
+                    <div class="dropdown-header">Reportes</div>
+                    <a class="dropdown-item"target="_blank"  href="{% url 'contest:order_pdf' object.pk %}">Descargar Orden</a>
+                    <a class="dropdown-item" target="_blank" href="{% url 'contest:minutes_pdf' object.pk %}">Generar Actas Calificaciones</a>
+                    <a class="dropdown-item"target="_blank"  href="{% url 'contest:results_pdf' object.pk %}">Descargar Resultados </a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{% url 'contest:round-update' object.pk %}">Editar Ronda</a>
+                    <a id="randomizeOrderDropdownItem" class="dropdown-item" href="#">Sortear Orden</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><span class="text-primary">Nombre:</span> <span class="text-dark">{{ object.name }}</span></h5>
+                </div>
+                <div class="col-md-6">
+                    <h5><span class="text-primary">Fecha:</span> <span class="text-dark">{{ object.date }}</span></h5>
+                </div>
+            </div>
+            <div class="row">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            {% for header in table_header %}
+                                <th>{{ header }}</th>
+                            {% endfor %}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for row in table_rows %}
+                            <tr>
+                                {% for cell in row %}
+                                    {% if forloop.last %}
+                                        <td><a href="{% url 'contest:round-participant' object.pk cell %}"><i
+                                                class="fas fa-edit"></i> Calificar</a></td>
+                                    {% else %}
+                                        <td>{{ cell }}</td>
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script>
+        document.getElementById("randomizeOrderDropdownItem").addEventListener("click", function () {
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "Esto ordenará aleatoriamente los participantes.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, ordenar!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch("{% url 'contest:randomize_participants_order' object.pk %}", {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': '{{ csrf_token }}',
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                    }).then(response => {
+                        if (response.ok) {
+                            Swal.fire({
+                                title: 'Ordenado',
+                                text: 'Los participantes han sido ordenados aleatoriamente.',
+                                icon: 'success',
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire(
+                                'Error',
+                                'Hubo un problema al ordenar los participantes.',
+                                'error'
+                            );
+                        }
+                    });
+                }
+            })
+        });
+    </script>
+{% endblock %}

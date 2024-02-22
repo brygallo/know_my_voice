@@ -1,0 +1,13 @@
+{% extends 'base/base_form.html' %}
+{% block content_title %}
+  Actualizar Participante #: {{ object.pk }}
+{% endblock %}
+{% block navigation_extra %}
+  {% url 'contest:township-list' as township %}
+  {% include "base/nav_with_url.html" with url=township label='Cantones' %}
+  {% include "base/nav_with_url.html" with label=object %}
+  {% include "base/nav_without_url.html" with label='Actualizar Cantón' %}
+{% endblock %}
+{% block submit %}
+  <button type="submit" class="btn btn-success">Actualizar!</button>
+{% endblock %}

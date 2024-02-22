@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de Ronda</title>
+    <style>
+        @page {
+              @top-left {
+                content: url('https://www.morona.gob.ec/wp-content/uploads/2024/02/LOGOCM-e1708551320850.png');
+            }
+            @top-right {
+                content: url('logo-derecha.png');
+            }
+
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #4e73df; /* Un azul bonito */
+            color: white;
+        }
+
+        .nombre-column {
+            width: 40%; /* Más espacio para los nombres */
+        }
+
+        .calificacion-column {
+            width: 15%; /* Menos espacio para las calificaciones */
+        }
+
+        .total-column {
+            width: 20%; /* Un poco más de espacio para el total */
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .judge-section:not(:last-child) {
+            page-break-after: always;
+        }
+
+        .signature {
+            margin-top: 10px;
+            text-align: center;
+            padding-top: 50px;
+        }
+    </style>
+</head>
+<body>
+
+{% for judge in judges %}
+    <div class="judge-section">
+        <h1>Detalle de la Ronda: {{ round.name }}</h1>
+        <p><strong>Fecha:</strong> {{ round.date }}</p>
+        <p><strong>Juez:</strong> {{ judge.judge }}</p>
+        <h2>Participantes</h2>
+        <br>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th class="nombre-column">Nombres Completos</th>
+                <th class="calificacion-column">Acoplamiento en el Ritmo (35 pts)</th>
+                <th class="calificacion-column">Entonación Afinación (35 pts)</th>
+                <th class="calificacion-column">Expresión e interpretación (30 pts)</th>
+                <th class="total-column">Total</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for participant in judge.participants %}
+                <tr>
+                    <td>{{ participant.participant }}</td>
+                    <td>{{ participant.coupling }}</td>
+                    <td>{{ participant.intonation }}</td>
+                    <td>{{ participant.expression }}</td>
+                    <td>{{ participant.total }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Firma de responsabilidad del juez -->
+        <div class="signature">
+            <p>__________________________________</p>
+            <p><strong>{{ judge.judge }}</strong></p>
+        </div>
+    </div>
+{% endfor %}
+
+</body>
+</html>

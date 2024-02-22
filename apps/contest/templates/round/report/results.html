@@ -1,0 +1,112 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de Ronda</title>
+    <style>
+        @page {
+            @top-left {
+                content: url('https://www.morona.gob.ec/wp-content/uploads/2024/02/LOGOCM-e1708551320850.png');
+            }
+            @top-right {
+                content: url('logo-derecha.png');
+            }
+
+        }
+
+        body, table {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #4e73df; /* Un azul bonito */
+            color: white;
+        }
+
+        table {
+            font-size: 80%;
+        }
+
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .judge-section:not(:last-child) {
+            page-break-after: always;
+        }
+
+        .signature {
+            margin-top: 10px;
+            text-align: center;
+            padding-top: 50px;
+        }
+    </style>
+</head>
+<body>
+
+
+<div class="judge-section">
+    <h2>Results de la Ronda {{ round.name }}</h2>
+    <p><strong>Fecha:</strong> {{ round.date }}</p>
+    <h2>Participantes</h2>
+    <br>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Puesto</th>
+            {% for header in table_header %}
+                {% if forloop.last %}
+                {% else %}
+                    <th>{{ header }}</th>
+                {% endif %}
+
+            {% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for row in table_rows %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                {% for cell in row %}
+
+                    {% if forloop.last %}
+
+                    {% else %}
+                        <td>{{ cell }}</td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+</div>
+
+
+</body>
+</html>

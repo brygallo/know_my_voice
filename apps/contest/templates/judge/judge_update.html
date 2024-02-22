@@ -1,0 +1,13 @@
+{% extends 'base/base_form.html' %}
+{% block content_title %}
+  Actualizar Juez #: {{ object.pk }}
+{% endblock %}
+{% block navigation_extra %}
+  {% url 'contest:participant-list' as participant %}
+  {% include "base/nav_with_url.html" with url=participant label='Participantes' %}
+  {% include "base/nav_with_url.html" with url=object.get_detail_url label=object %}
+  {% include "base/nav_without_url.html" with label='Actualizar Participante' %}
+{% endblock %}
+{% block submit %}
+  <button type="submit" class="btn btn-success">Actualizar!</button>
+{% endblock %}

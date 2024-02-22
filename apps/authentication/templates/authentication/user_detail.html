@@ -1,0 +1,35 @@
+{% extends "base/base_detail.html" %}
+
+{% block content_title %}
+  Hitman detail: {{ object.get_full_name }}
+{% endblock %}
+
+{% block navigation_extra %}
+  {% include "base/nav_with_url.html" with url=object.get_list_url label='Conoce mi Voz' %}
+  {% include "base/nav_without_url.html" with label=object.email %}
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-12">
+      <h5 class="text-primary">Email</h5>
+      <p>{{ object.email }}</p>
+    </div>
+    <div class="col-12">
+      <h5 class="text-primary">Description</h5>
+      <p>{{ object.description|default:"Without description" }}</p>
+    </div>
+    {% if object.subordinates.all %}
+      <div class="col-12">
+        <h5 class="text-primary">SUBORDINATES</h5>
+        <ul>
+          {% for subordinate in object.subordinates.all %}
+            <li>{{ subordinate.get_full_name }} - {{ subordinate.email }} - {{ subordinate.get_state_display }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+    {% endif %}
+
+  </div>
+{% endblock %}

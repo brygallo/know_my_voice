@@ -1,0 +1,10 @@
+.DS_Store
+=======
+.idea
+*.pyc
+*~
+*.lock
+.env
+media/
+**/migrations/*
+!**/migrations/__init__.py

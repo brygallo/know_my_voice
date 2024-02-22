@@ -1,0 +1,17 @@
+{% extends 'base/base.html' %}
+{% load transitions %}
+{% block transitions %}
+  {% if object.get_available_state_transitions %}
+    <div class="row">
+      <div class="col-12">{% get_meta_data object as data %}
+        {% for transition in object.get_available_state_transitions %}
+          <a href="#"
+             class="btn btn-{{ transition.custom.btn }} transition"
+             data-url="{% url 'transitions:transition' transition.name data.app_name data.model_name object.pk %}">
+            {{ transition.custom.verbose }}
+          </a>
+        {% endfor %}</div>
+    </div>
+    <hr>
+  {% endif %}
+{% endblock %}

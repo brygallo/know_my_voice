@@ -1,0 +1,28 @@
+{% extends "base/base_detail.html" %}
+
+{% block content_title %}
+    Detalle del Juezs: {{ object.pk }}
+    <a title="Editar" href={% url 'contest:judge-update' object.pk%}><i class="fas fa-edit"></i></a>
+{% endblock %}
+
+{% block navigation_extra %}
+    {% include "base/nav_with_url.html" with url=object.get_list_url label='Jueces' %}
+    {% include "base/nav_without_url.html" with label=object %}
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <h5 class="text-primary">Correo</h5>
+            <p>{{ object.email }}</p>
+        </div>
+        <div class="col-12">
+            <h5 class="text-primary">Nombres</h5>
+            <p>{{ object.get_full_name }}</p>
+        </div>
+        <div class="col-12">
+            <h5 class="text-primary"> Username</h5>
+            <p>{{ object.username }}</p>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base/base_detail.html" %}
+
+{% block content_title %}
+    Detalle del Participante: {{ object.pk }}
+    <a title="Editar" href={% url 'contest:participant-update' object.pk%}><i class="fas fa-edit"></i></a>
+{% endblock %}
+
+{% block navigation_extra %}
+    {% include "base/nav_with_url.html" with url=object.get_list_url label='Participantes' %}
+    {% include "base/nav_without_url.html" with label=object %}
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <h5 class="text-primary">Cédula</h5>
+            <p>{{ object.identification }}</p>
+        </div>
+        <div class="col-12">
+            <h5 class="text-primary">Nombres Completos</h5>
+            <p>{{ object.name }}</p>
+        </div>
+        <div class="col-12">
+            <h5 class="text-primary">Fecha de Nacimiento</h5>
+            <p>{{ object.date_of_birth }}</p>
+        </div>
+        <div class="col-12">
+            <h5 class="text-primary"> Edad</h5>
+            <p>{{ object.age }}</p>
+        </div>
+        <div class="col-12">
+            <h5 class="text-primary"> Número de Télefono</h5>
+            <p>{{ object.age }}</p>
+        </div>
+        <div class="col-12">
+            <h5 class="text-primary">Cantón</h5>
+            <p>{{ object.township.name }}</p>
+        </div>
+        <div class="col-12">
+            <h5 class="text-primary"> Dirección</h5>
+            <p>{{ object.address|default:"Sin dirección" }}</p>
+        </div>
+    </div>
+{% endblock %}

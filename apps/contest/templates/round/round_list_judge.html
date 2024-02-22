@@ -1,0 +1,54 @@
+{% extends "base/list.html" %}
+{% block nav %}
+
+{% endblock %}
+{% block content_title %}
+
+{% endblock %}
+{% block content %}
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center bg-primary">
+            <div>
+                <h6 class="m-0 font-weight-bold small text-white">Listado de Rondas</h6>
+            </div>
+            <div>
+                <h6 class="m-0 font-weight-bold small text-white text-right">PANEL PARA JUECES</h6>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Fecha</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for object in object_list %}
+                            <tr data-url="{% url 'contest:round-detail' object.pk %}">
+                                <td>{{ object.name }}</td>
+                                <td>{{ object.date }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script>
+        document.querySelectorAll('.table-hover tr[data-url]').forEach(row => {
+            row.addEventListener('click', function () {
+                window.location.href = this.dataset.url;
+            });
+        });
+    </script>
+{% endblock %}

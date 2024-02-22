@@ -1,0 +1,83 @@
+{% extends "base/base_detail.html" %}
+
+{% block content_title %}
+
+{% endblock %}
+
+{% block navigation_extra %}
+    {% include "base/nav_with_url.html" with url=object.get_list_url label='Rondas' %}
+    {% include "base/nav_without_url.html" with label=object %}
+{% endblock %}
+
+{% block content %}
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center bg-primary">
+            <div>
+                <h6 class="m-0 font-weight-bold small text-white">Ronda# {{ object.pk }}</h6>
+            </div>
+            <div>
+                <h6 class="m-0 font-weight-bold small text-white text-right">PANEL PARA JUECES</h6>
+            </div>
+        </div>
+
+        <div class="card-body small">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>
+                        <span class="text-primary small">Nombre:</span> <span
+                            class="text-dark small">{{ object.name }}</span></h5>
+                </div>
+                <div class="col-md-4">
+                    <h5><span class="text-primary small">Fecha:</span> <span
+                            class="text-dark small">{{ object.date }}</span></h5>
+                </div>
+                <div class="col-md-4">
+                    <h5><span class="text-primary small">Jueces:</span> <span
+                            class="text-dark small">
+
+                        {% for judge in object.judges.all %}
+                            {{ judge.get_full_name}}{% if not forloop.last %},{% endif %}
+                        {% endfor %}
+
+                    </span></h5>
+                </div>
+            </div>
+            <div class="row">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>Orden</th>
+                            <th>Nombres</th>
+                            <th>Total</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for row in table_rows %}
+                            <tr>
+                                {% for cell in row %}
+                                    {% if forloop.last %}
+                                        <td>
+                                            <a href="{% url 'contest:round-participant' object.pk cell %}"
+                                               class="btn btn-outline-light btn-icon-split btn-sm">
+                                        <span class="icon text-dark">
+                                            <i class="fas fa-edit"></i>
+                                        </span>
+                                                <span class="text text-dark">Calificar</span>
+                                            </a>
+                                        </td>
+                                    {% else %}
+                                        <td>{{ cell }}</td>
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base/list.html" %}
+{% load crispy_forms_tags %}
+{% block navigation_extra %}
+  {% url 'hits:list' as hits_list %}
+  {% include "base/nav_with_url.html" with url=hits_list label='Hits' %}
+  {% include "base/nav_without_url.html" with label='Create hit' %}
+{% endblock %}
+{% block content_title %}
+  Hits create!
+{% endblock %}
+{% block content %}
+  <div class="row justify-content-md-center">
+    <div class="col-11">
+      <form method="post" class="create-form" novalidate>
+        {% csrf_token %}
+        {{ form|crispy }}
+        {% block submit %}
+          <button type="submit" class="btn btn-success">Create</button>
+        {% endblock %}
+      </form>
+    </div>
+  </div>
+{% endblock %}

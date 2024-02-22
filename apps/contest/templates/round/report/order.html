@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de Ronda</title>
+    <style>
+        @page {
+              @top-left {
+                content: url('https://www.morona.gob.ec/wp-content/uploads/2024/02/LOGOCM-e1708551320850.png');
+            }
+            @top-right {
+                content: url('logo-derecha.png');
+            }
+
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #4e73df; /* Un azul bonito */
+            color: white;
+        }
+
+        .nombre-column {
+            width: 40%; /* Más espacio para los nombres */
+        }
+
+        .calificacion-column {
+            width: 15%; /* Menos espacio para las calificaciones */
+        }
+
+        .total-column {
+            width: 20%; /* Un poco más de espacio para el total */
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .judge-section:not(:last-child) {
+            page-break-after: always;
+        }
+
+        .signature {
+            margin-top: 10px;
+            text-align: center;
+            padding-top: 50px;
+        }
+    </style>
+</head>
+<body>
+
+
+<div class="judge-section">
+    <h2>Orden de Participación</h2>
+    <p><strong>Ronda</strong> {{ round.name }}</p>
+    <p><strong>Fecha:</strong> {{ round.date }}</p>
+    <br>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Orden</th>
+            <th>Participante</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for row in table_rows %}
+            <tr>
+                <td>{{ row.0 }}</td>
+                <td>{{ row.1 }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+
+</body>
+</html>

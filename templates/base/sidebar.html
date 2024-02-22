@@ -1,0 +1,48 @@
+<!-- Sidebar -->
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion toggled" id="accordionSidebar">
+
+    <!-- Sidebar - Brand -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
+        <div class="sidebar-brand-icon rotate-n-15">
+            <i class="fas fa-music"></i>
+        </div>
+        <div class="sidebar-brand-text mx-3">Conoce Mi Voz</div>
+    </a>
+
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Conoce Mi Voz
+    </div>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <!-- Nav Item - Charts -->
+
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'contest:round-list' %}">
+            <i class="fas fa-compact-disc""></i>
+            <span>Rondas</span></a>
+    </li>
+
+    {% if not user.is_judge %}
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'contest:participant-list' %}">
+                <i class="fas fa-fw fa-user-alt"></i>
+                <span>Participantes</span></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'contest:judge-list' %}">
+                <i class="fas fa-gavel"></i>
+                <span>Jueces</span></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'contest:township-list' %}">
+                <i class="fas fa-map"></i>
+                <span>Cantones</span></a>
+        </li>
+    {% endif %}
+</ul>
+<!-- End of Sidebar -->

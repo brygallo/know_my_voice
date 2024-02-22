@@ -1,0 +1,23 @@
+{% extends "base/list.html" %}
+{% load crispy_forms_tags %}
+{% block navigation_extra %}
+  {% url 'contest:participant-list' as participant_list %}
+  {% include "base/nav_with_url.html" with url=participant_list label='Lista de Participantes' %}
+  {% include "base/nav_without_url.html" with label='Crear Participantes' %}
+{% endblock %}
+{% block content_title %}
+  Crear participante!
+{% endblock %}
+{% block content %}
+  <div class="row justify-content-md-center">
+    <div class="col-11">
+      <form method="post" class="create-form" novalidate>
+        {% csrf_token %}
+        {{ form|crispy }}
+        {% block submit %}
+          <button type="submit" class="btn btn-success">Crear</button>
+        {% endblock %}
+      </form>
+    </div>
+  </div>
+{% endblock %}

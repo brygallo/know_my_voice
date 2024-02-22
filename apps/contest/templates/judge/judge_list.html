@@ -1,0 +1,86 @@
+{% extends "base/list.html" %}
+{% block navigation_extra %}
+    {% include "base/nav_without_url.html" with label='Jueces' %}
+{% endblock %}
+{% block content_title %}
+    Jueces
+    <a href="{% url 'contest:judge-create' %}"><i class="fas fa-plus"></i></a>
+{% endblock %}
+{% block content %}
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th scope="col">Correo</th>
+                <th scope="col">Nombre de Usuario</th>
+                <th scope="col">Nombres</th>
+                <th scope="col">Es Juez</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for object in object_list %}
+                <tr data-url="{% url 'contest:judge-detail' object.pk %}">
+                    <td>{{ object.email }}</td>
+                    <td>{{ object.username }}</td>
+                    <td>{{ object.get_full_name }}</td>
+                    <td>
+                        {% if object.is_judge %}
+                            <i class="fas fa-check-circle" style="color: green;"></i>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="javascript:void(0);" class="delete-icon"
+                           data-url="{% url 'contest:judge-delete' object.pk %}" data-csrf="{{ csrf_token }}">
+                            <i class="fas fa-trash-alt text-danger"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script>
+        document.querySelectorAll('.table-hover tr[data-url]').forEach(row => {
+            row.addEventListener('dblclick', function () {
+                window.location.href = this.dataset.url;
+            });
+        });
+    </script>
+
+    <script>
+        $('.delete-icon').click(function (e) {
+            e.preventDefault();
+            var deleteUrl = $(this).data('url');
+            var csrfToken = $(this).data('csrf');
+
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡No podrás revertir esto!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, eliminar!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: deleteUrl,
+                        type: 'POST',
+                        data: {'csrfmiddlewaretoken': csrfToken},
+                        success: function (response) {
+                            window.location.href = "{% url 'contest:judge-list' %}";
+                        },
+                        error: function (response) {
+                            Swal.fire('Error', 'Hubo un problema al eliminar el participante.', 'error');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+{% endblock %}

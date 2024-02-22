@@ -1,0 +1,52 @@
+{% extends "base/list.html" %}
+{% load static %}
+
+{% block navigation_extra %}
+    {% include "base/nav_without_url.html" with label='Ronda' %}
+{% endblock %}
+{% block content_title %}
+    Rondas
+    {% if not request.user.is_judge %}
+        <a href="{% url 'contest:round-create' %}"><i class="fas fa-plus"></i></a>
+    {% endif %}
+{% endblock %}
+{% block content %}
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th scope="col">id</th>
+                <th>Nombre</th>
+                <th>Fecha</th>
+                <th>Activo</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for object in object_list %}
+                <tr data-url="{% url 'contest:round-detail' object.pk %}">
+                    <td>{{ object.pk }}</td>
+                    <td>{{ object.name }}</td>
+                    <td>{{ object.date }}</td>
+                    <td> {% if object.is_active %}
+                            <i class="fas fa-check-circle" style="color: green;"></i>
+                        {% endif %}</td>
+
+
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script>
+        document.querySelectorAll('.table-hover tr[data-url]').forEach(row => {
+            row.addEventListener('click', function () {
+                window.location.href = this.dataset.url;
+            });
+        });
+    </script>
+{% endblock %}
