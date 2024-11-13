@@ -1,4 +1,5 @@
 *.css linguist-vendored
-static/* linguist-vendored
-templates/* linguist-vendored
 *.html linguist-vendored
+static/**/* linguist-vendored
+templates/**/* linguist-vendored
+
