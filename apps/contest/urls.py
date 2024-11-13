@@ -4,7 +4,8 @@ from apps.contest.views.judge import JudgeListView, JudgeCreateView, JudgeUpdate
 from apps.contest.views.participant import ParticipantListView, ParticipantCreateView, ParticipantDetailView, \
     ParticipantUpdateView, ParticipantDeleteView
 from apps.contest.views.rounds import RoundListView, RoundCreateView, RoundDetailView, RoundUpdateView, RoundDeleteView, \
-    RoundParticipantView, RandomizeParticipantsOrderView, ResultsPDFView, MinutesPDFView, OrderPDFView, MarkAsAbsentView
+    RoundParticipantView, RandomizeParticipantsOrderView, ResultsPDFView, MinutesPDFView, OrderPDFView, \
+    MarkAsAbsentView, ToggleRoundActiveView
 from apps.contest.views.township import TownshipListView, TownshipCreateView, TownshipUpdateView, TownshipDeleteView
 
 app_name = "contest"
@@ -35,6 +36,7 @@ urlpatterns = (
     path('order/pdf/<int:round_id>/', OrderPDFView.as_view(), name='order_pdf'),
 
     path('round/<int:round_id>/participant/<str:participant_id>/mark_absent/', MarkAsAbsentView.as_view(), name='round-mark-absent'),
+    path('round/<int:round_id>/toggle_active/', ToggleRoundActiveView.as_view(), name='toggle-round-active'),
 
     # URLs para Township
     path('townships/', TownshipListView.as_view(), name='township-list'),

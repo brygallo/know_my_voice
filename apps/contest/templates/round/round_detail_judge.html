@@ -16,7 +16,7 @@
                 <h6 class="m-0 font-weight-bold small text-white">Ronda# {{ object.pk }}</h6>
             </div>
             <div>
-                <h6 class="m-0 font-weight-bold small text-white text-right">PANEL PARA JUECES</h6>
+                <h6 class="m-0 font-weight-bold small text-white text-right">{{ user.username }} - PANEL PARA JUECES</h6>
             </div>
         </div>
 
@@ -60,11 +60,11 @@
                                     {% if forloop.last %}
                                         <td>
                                             <a href="{% url 'contest:round-participant' object.pk cell %}"
-                                               class="btn btn-outline-light btn-icon-split btn-sm">
-                                        <span class="icon text-dark">
+                                               class="btn btn-primary btn-icon-split btn-sm">
+                                        <span class="icon text-white">
                                             <i class="fas fa-edit"></i>
                                         </span>
-                                                <span class="text text-dark">Calificar</span>
+                                                <span class="text text-white">Calificar</span>
                                             </a>
                                         </td>
                                     {% else %}

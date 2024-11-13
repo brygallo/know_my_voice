@@ -12,8 +12,14 @@
 {% block content %}
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
-            <div>
-                <h6 class="m-0 font-weight-bold text-primary d-inline">Ronda # {{ object.pk }}</h6>
+            <div class="d-flex align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Ronda # {{ object.pk }}</h6>
+                <form action="{% url 'contest:toggle-round-active' round_id=object.id %}" method="post" class="ml-2">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-{{ object.is_active|yesno:"danger,success" }} btn-sm">
+                        {{ object.is_active|yesno:"Desactivar,Activar" }} ronda
+                    </button>
+                </form>
             </div>
             <div class="dropdown no-arrow">
                 <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
@@ -23,9 +29,12 @@
                 <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
                      aria-labelledby="dropdownMenuLink" style="">
                     <div class="dropdown-header">Reportes</div>
-                    <a class="dropdown-item"target="_blank"  href="{% url 'contest:order_pdf' object.pk %}">Descargar Orden</a>
-                    <a class="dropdown-item" target="_blank" href="{% url 'contest:minutes_pdf' object.pk %}">Generar Actas Calificaciones</a>
-                    <a class="dropdown-item"target="_blank"  href="{% url 'contest:results_pdf' object.pk %}">Descargar Resultados </a>
+                    <a class="dropdown-item" target="_blank" href="{% url 'contest:order_pdf' object.pk %}">Descargar
+                        Orden</a>
+                    <a class="dropdown-item" target="_blank" href="{% url 'contest:minutes_pdf' object.pk %}">Generar
+                        Actas Calificaciones</a>
+                    <a class="dropdown-item" target="_blank" href="{% url 'contest:results_pdf' object.pk %}">Descargar
+                        Resultados </a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="{% url 'contest:round-update' object.pk %}">Editar Ronda</a>
                     <a id="randomizeOrderDropdownItem" class="dropdown-item" href="#">Sortear Orden</a>

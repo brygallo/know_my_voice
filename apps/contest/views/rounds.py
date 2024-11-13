@@ -8,6 +8,7 @@ from django.views import View
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 
 from apps.contest.forms import RoundForm, RoundParticipantForm
+from apps.contest.mixin import ActiveRoundRequiredMixin
 from apps.contest.models import Round, RoundParticipant, RoundParticipantExtraInfo, Participant
 from apps.contest.services import RoundContextService
 from apps.contest.views.pdf_base import BasePDFView
@@ -53,9 +54,8 @@ class RoundCreateView(LoginRequiredMixin, BaseFormRound, CreateView):
     template_name = "round/round_form.html"
 
 
-class RoundDetailView(LoginRequiredMixin, DetailView):
+class RoundDetailView(LoginRequiredMixin, ActiveRoundRequiredMixin, DetailView):
     model = Round
-    template_name = "round/round_detail.html"
 
     def get_template_names(self):
         user = self.request.user
@@ -103,6 +103,10 @@ class RoundParticipantView(LoginRequiredMixin, UpdateView):
         self.judge = request.user
         self.participant = get_object_or_404(Participant, pk=self.kwargs.get('participant_id'))
 
+        if not self.round.is_active:
+            messages.error(request, "La ronda ya no está activa.")
+            return redirect('contest:round-detail', pk=round_id)
+
         if not self.round.judges.filter(pk=self.judge.pk).exists():
             messages.error(request, "No estás autorizado para calificar en esta ronda.")
             return redirect('contest:round-detail', pk=round_id)
@@ -125,6 +129,10 @@ class RoundParticipantView(LoginRequiredMixin, UpdateView):
         return reverse_lazy('contest:round-detail', kwargs={'pk': self.object.round.pk})
 
     def form_valid(self, form):
+        if not self.round.is_active:
+            messages.error(self.request, "La ronda ya no está activa. No se puede registrar la calificación.")
+            return redirect('contest:round-detail', pk=self.round.pk)
+
         response = super().form_valid(form)
         messages.success(self.request, "Calificación registrada correctamente.")
         return response
@@ -154,8 +162,13 @@ class MarkAsAbsentView(LoginRequiredMixin, View):
         participant_id = kwargs.get('participant_id')
         round_id = kwargs.get('round_id')
         judge = request.user
-        round_participant = get_object_or_404(RoundParticipant, participant_id=participant_id, round_id=round_id,
-                                              judge=judge)
+
+        round_instance = get_object_or_404(Round, pk=round_id)
+        if not round_instance.is_active:
+            messages.error(request, "La ronda ya no está activa. No se puede marcar al participante como ausente.")
+            return redirect('contest:round-detail', pk=round_id)
+
+        round_participant = get_object_or_404(RoundParticipant, participant_id=participant_id, round_id=round_id, judge=judge)
         round_participant.coupling = 0
         round_participant.intonation = 0
         round_participant.expression = 0
@@ -164,6 +177,15 @@ class MarkAsAbsentView(LoginRequiredMixin, View):
         messages.success(request, "El participante ha sido marcado como ausente correctamente.")
         return redirect('contest:round-detail', pk=round_id)
 
+
+class ToggleRoundActiveView(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        round_id = kwargs.get('round_id')
+        round = get_object_or_404(Round, id=round_id)
+        round.is_active = not round.is_active
+        round.save()
+        messages.success(request, f"Estado de la ronda {'activado' if round.is_active else 'desactivado'} correctamente.")
+        return redirect('contest:round-detail', pk=round_id)
 
 # PDF REPORTS
 
