@@ -13,8 +13,6 @@ class Participant(models.Model):
     identification = models.CharField(max_length=16, primary_key=True, verbose_name="Cedula")
     name = models.CharField(max_length=128, verbose_name="Nombres completos")
     date_of_birth = models.DateField(verbose_name="Fecha de Nacimiento")
-    phone_number = models.CharField(max_length=15, blank=True, verbose_name="Numero de Télefono")
-    address = models.TextField(blank=True, verbose_name="Dirección")
     township = models.ForeignKey('Township', on_delete=models.PROTECT, null=True, blank=False, verbose_name="Cantón")
 
     @property
@@ -81,30 +79,46 @@ class RoundParticipant(models.Model):
     judge = models.ForeignKey("authentication.User", on_delete=models.PROTECT, verbose_name="Juez", null=True,
                               blank=False)
 
+    presence = models.PositiveSmallIntegerField(
+        verbose_name="Presencia (20 pts)",
+        null=True, blank=False, default=0,
+        validators=[MinValueValidator(0), MaxValueValidator(20)])
+
+    vocalization = models.PositiveSmallIntegerField(
+        verbose_name="Vocalización (20 pts)",
+        null=True, blank=False, default=0,
+        validators=[MinValueValidator(0), MaxValueValidator(20)])
+
+    rhythm = models.PositiveSmallIntegerField(
+        verbose_name="Ritmo (20 pts)",
+        null=True, blank=False, default=0,
+        validators=[MinValueValidator(0), MaxValueValidator(20)])
+
     coupling = models.PositiveSmallIntegerField(
-        verbose_name="Acoplamiento en el Ritmo (35 pts)",
+        verbose_name="Acoplamiento a la pista musical (20 pts)",
         null=True, blank=False, default=0,
-        validators=[MinValueValidator(0), MaxValueValidator(35)])
-    intonation = models.PositiveSmallIntegerField(
-        verbose_name="Entonación Afinación (35 pts)",
+        validators=[MinValueValidator(0), MaxValueValidator(20)])
+
+    stage_performance = models.PositiveSmallIntegerField(
+        verbose_name="Desempeño escénico (20 pts)",
         null=True, blank=False, default=0,
-        validators=[MinValueValidator(0), MaxValueValidator(35)])
-    expression = models.PositiveSmallIntegerField(
-        verbose_name="Expresion e interpretación (30 pts)",
-        null=True, blank=False, default=0,
-        validators=[MinValueValidator(0), MaxValueValidator(30)])
+        validators=[MinValueValidator(0), MaxValueValidator(20)])
 
     def __str__(self):
         return f"{self.round.name} - {self.participant.name}"
 
     def total_score(self):
         total = 0
+        if self.presence:
+            total += self.presence
+        if self.vocalization:
+            total += self.vocalization
+        if self.rhythm:
+            total += self.rhythm
         if self.coupling:
             total += self.coupling
-        if self.intonation:
-            total += self.intonation
-        if self.expression:
-            total += self.expression
+        if self.stage_performance:
+            total += self.stage_performance
         return total
 
 

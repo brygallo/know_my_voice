@@ -5,7 +5,6 @@ name = "pypi"
 
 [packages]
 asgiref = "==3.4.1"
-"backports.zoneinfo" = "==0.2.1"
 django = "==3.2.10"
 django-crispy-forms = "==1.13.0"
 django-fsm = "==2.8.0"
@@ -20,6 +19,8 @@ sqlparse = "==0.4.2"
 psycopg2-binary = "==2.9.3"
 weasyprint = "*"
 django-pwa = "*"
+pip = "==23.1"
+setuptools = "*"
 
 [dev-packages]
 
