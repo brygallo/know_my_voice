@@ -8,7 +8,7 @@ from ..authentication.models import User
 class ParticipantForm(forms.ModelForm):
     class Meta:
         model = Participant
-        fields = ["identification", "name", "date_of_birth", "phone_number", "address", "township"]
+        fields = ["identification", "name", "date_of_birth", "township"]
         widgets = {
             'date_of_birth': forms.DateInput(format=('%Y-%m-%d'), attrs={'class': 'form-control', 'type': 'date'}),
         }
@@ -39,7 +39,7 @@ class RoundParticipantForm(forms.ModelForm):
 
     class Meta:
         model = RoundParticipant
-        fields = ['coupling', 'intonation', 'expression']
+        fields = ['presence', 'vocalization', 'rhythm', 'coupling','stage_performance']
 
 
 class JudgeForm(UserCreationForm):

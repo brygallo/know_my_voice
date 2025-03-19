@@ -169,9 +169,11 @@ class MarkAsAbsentView(LoginRequiredMixin, View):
             return redirect('contest:round-detail', pk=round_id)
 
         round_participant = get_object_or_404(RoundParticipant, participant_id=participant_id, round_id=round_id, judge=judge)
+        round_participant.presence = 0
+        round_participant.vocalization = 0
+        round_participant.rhythm = 0
         round_participant.coupling = 0
-        round_participant.intonation = 0
-        round_participant.expression = 0
+        round_participant.stage_performance = 0
         round_participant.save()
 
         messages.success(request, "El participante ha sido marcado como ausente correctamente.")
@@ -268,6 +270,7 @@ class ResultsPDFView(BasePDFView):
         return self.render_to_pdf_response(context)
 
 
+
 class MinutesPDFView(BasePDFView):
     template_name = "round/report/minutes.html"
     open_in_browser = True
@@ -282,22 +285,28 @@ class MinutesPDFView(BasePDFView):
             participants_info = []
 
             for participant in round_instance.participants.all():
-                participant_notes = RoundParticipant.objects.filter(participant=participant, judge=judge,
-                                                                    round=round_instance).first()
+                participant_notes = RoundParticipant.objects.filter(
+                    participant=participant,
+                    judge=judge,
+                    round=round_instance
+                ).first()
+
                 if participant_notes:
                     participant_data = {
                         'participant': participant,
+                        'presence': participant_notes.presence,
+                        'vocalization': participant_notes.vocalization,
+                        'rhythm': participant_notes.rhythm,
                         'coupling': participant_notes.coupling,
-                        'intonation': participant_notes.intonation,
-                        'expression': participant_notes.expression,
+                        'stage_performance': participant_notes.stage_performance,
                         'total': participant_notes.total_score(),
                     }
                     participants_info.append(participant_data)
 
-                judge_info = {
-                    'judge': judge,
-                    'participants': participants_info,
-                }
+            judge_info = {
+                'judge': judge,
+                'participants': participants_info,
+            }
             judges_info.append(judge_info)
 
         context['judges'] = judges_info
@@ -320,7 +329,7 @@ class MinutesPDFView(BasePDFView):
         expected_califications = judges_count * participants_count
 
         if round_participant_count < expected_califications:
-            messages.error(request, "Para generar el Acta todos los jueces deben calificar a todos los participantes.")
+            messages.error(request, "Para generar el Acta, todos los jueces deben calificar a todos los participantes.")
             return redirect('contest:round-detail', pk=round_instance.pk)
 
         self.download_filename = f"lista_participantes_{round_instance.name}.pdf"

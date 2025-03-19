@@ -1,5 +1,6 @@
 {% extends "base/list.html" %}
 {% load crispy_forms_tags %}
+
 {% block navigation_extra %}
     {% url 'contest:round-list' as round_list %}
     {% url 'contest:round-detail' round_id as round_detail %}
@@ -13,46 +14,42 @@
 
 {% block content %}
     <div class="card shadow mb-4">
-    <div class="card-header py-3 d-flex justify-content-between align-items-center bg-primary">
-        <div>
-            <h6 class="m-0 font-weight-bold small text-white">{{ object.participant.name }} </h6>
-        </div>
-        <div>
+        <div class="card-header py-3 d-flex justify-content-between align-items-center bg-primary">
+            <div>
+                <h6 class="m-0 font-weight-bold small text-white">{{ object.participant.name }}</h6>
+            </div>
+            <div>
                 <a href="{% url 'contest:round-mark-absent' object.round.id object.participant.identification %}"
                    class="btn btn-danger text-right small btn-sm">
-                    <span class="text ">Marcar como ausente</span>
+                    <span class="text">Marcar como ausente</span>
                 </a>
+            </div>
         </div>
-    </div>
-    <div class="card-body small">
-    <div class="row ">
+        <div class="card-body small">
+            <div class="row">
+                <div class="col-sm-3">
+                    <h5><span class="text-primary small">Nombre:</span> <span class="text-dark small">{{ object.participant.name }}</span></h5>
+                </div>
+                <div class="col-md-3">
+                    <h5><span class="text-primary small">Cédula:</span> <span class="text-dark small">{{ object.participant.identification }}</span></h5>
+                </div>
+                <div class="col-md-3">
+                    <h5><span class="text-primary small">Cantón:</span> <span class="text-dark small">{{ object.participant.township.name }}</span></h5>
+                </div>
+                <div class="col-md-3">
+                    <h5><span class="text-primary small">Edad:</span> <span class="text-dark small">{{ object.participant.age }}</span></h5>
+                </div>
 
-        <div class="col-sm-3">
-            <h5>
-                <span class="text-primary small">Nombre:</span> <span
-                    class="text-dark small">{{ object.participant.name }}</span></h5>
-        </div>
-        <div class="col-md-3">
-            <h5><span class="text-primary small">Cédula:</span> <span
-                    class="text-dark small">{{ object.participant.identification }}</span></h5>
-        </div>
-        <div class="col-md-3">
-            <h5><span class="text-primary small">Cantón:</span> <span
-                    class="text-dark small">{{ object.participant.township.name }}</span></h5>
-        </div>
-        <div class="col-md-3">
-            <h5><span class="text-primary small">Edad:</span> <span
-                    class="text-dark small">{{ object.participant.age }}</span></h5>
-        </div>
-
-        <div class="col-12">
-            <form method="post" class="create-form" novalidate>
-                {% csrf_token %}
-                {{ form|crispy }}
-                {% block submit %}
-                    <button type="submit" class="btn btn-primary">Calificar</button>
-                {% endblock %}
-            </form>
+                <div class="col-12">
+                    <form method="post" class="create-form" novalidate>
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        {% block submit %}
+                            <button type="submit" class="btn btn-primary">Calificar</button>
+                        {% endblock %}
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}
@@ -91,22 +88,27 @@
             document.getElementById(fieldId).value = score;
             Swal.close();
         }
-    </script>
 
-    <script>
         document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('id_presence').addEventListener('click', function () {
+                openRatingSelector('id_presence', 20);
+            });
+
+            document.getElementById('id_vocalization').addEventListener('click', function () {
+                openRatingSelector('id_vocalization', 20);
+            });
+
+            document.getElementById('id_rhythm').addEventListener('click', function () {
+                openRatingSelector('id_rhythm', 20);
+            });
+
             document.getElementById('id_coupling').addEventListener('click', function () {
-                openRatingSelector('id_coupling', 35);
+                openRatingSelector('id_coupling', 20);
             });
 
-            document.getElementById('id_intonation').addEventListener('click', function () {
-                openRatingSelector('id_intonation', 35);
-            });
-
-            document.getElementById('id_expression').addEventListener('click', function () {
-                openRatingSelector('id_expression', 30);
+            document.getElementById('id_stage_performance').addEventListener('click', function () {
+                openRatingSelector('id_stage_performance', 20);
             });
         });
     </script>
-
 {% endblock %}
