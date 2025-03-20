@@ -41,5 +41,5 @@ deploy:
     - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "chmod +x /home/$SSH_USER/know_my_voice/setup.sh"
     - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "/home/$SSH_USER/know_my_voice/setup.sh"
     - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "docker pull $DOCKER_IMAGE:latest"
-    - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "docker compose down || true"
-    - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "docker compose up -d --force-recreate --no-deps web"
+    - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "docker-compose down || true"
+    - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "docker-compose up -d --force-recreate --no-deps web"
