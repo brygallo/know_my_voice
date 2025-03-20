@@ -1,0 +1,31 @@
+image: docker:latest
+
+services:
+  - docker:dind
+
+variables:
+  DOCKER_IMAGE: "registry.gitlab.com/usuario/mi-proyecto"
+
+stages:
+  - build
+  - deploy
+
+before_script:
+  - apk add --no-cache curl
+  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+
+build:
+  stage: build
+  script:
+    - docker build -t $DOCKER_IMAGE:latest .
+    - docker push $DOCKER_IMAGE:latest
+
+deploy:
+  stage: deploy
+  only:
+    - main
+  script:
+    - docker pull $DOCKER_IMAGE:latest
+    - docker stop mi-proyecto || true
+    - docker rm mi-proyecto || true
+    - docker run -d --name mi-proyecto -p 8000:8000 --network=host $DOCKER_IMAGE:latest

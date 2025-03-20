@@ -6,15 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalle de Ronda</title>
     <style>
-        @page {
-            @top-left {
-                content: url('https://www.morona.gob.ec/wp-content/uploads/2024/02/LOGOCM-e1708551320850.png');
-            }
-            @top-right {
-                content: url('logo-derecha.png');
-            }
-
-        }
 
         body, table {
             margin: 0;
@@ -50,7 +41,7 @@
             background-color: #f9f9f9;
         }
 
-        h2 {
+        h3 {
             text-align: center;
         }
 
@@ -63,15 +54,24 @@
             text-align: center;
             padding-top: 50px;
         }
+
+            .logo {
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            width: 150px;
+        }
     </style>
 </head>
 <body>
 
+<img src="{{ logo_url }}" class="logo">
+
 
 <div class="judge-section">
-    <h2>Results de la Ronda {{ round.name }}</h2>
+    <h3>Resultados de la Ronda {{ round.name }}</h3>
     <p><strong>Fecha:</strong> {{ round.date }}</p>
-    <h2>Participantes</h2>
+    <h3>Participantes</h3>
     <br>
 
     <table class="table">

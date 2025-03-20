@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalle de Ronda</title>
     <style>
-         @page {
+        @page {
             size: A4 landscape;
             margin: 5mm;
         }
@@ -13,6 +14,13 @@
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
+        }
+
+        .logo {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            width: 150px;
         }
 
         table {
@@ -56,17 +64,18 @@
             background-color: #f9f9f9;
         }
 
-        h1, h2 {
+        h1, h2, h3 {
             text-align: center;
             margin-bottom: 10px;
         }
 
         .judge-section {
             margin-bottom: 40px;
+            page-break-before: always;
         }
 
         .signature {
-            margin-top: 30px;
+            margin-top: 50px;
             text-align: center;
             font-size: 14px;
         }
@@ -78,37 +87,39 @@
 </head>
 <body>
 
+
 {% for judge in judges %}
     <div class="judge-section">
-        <h1>Detalle de la Ronda: {{ round.name }}</h1>
+        <img src="{{ logo_url }}" class="logo">
+        <h2>Detalle de la Ronda: {{ round.name }}</h2>
         <p><strong>Fecha:</strong> {{ round.date }}</p>
         <p><strong>Juez:</strong> {{ judge.judge }}</p>
-        <h2>Participantes</h2>
+        <h3>Participantes</h3>
 
         <table>
             <thead>
-                <tr>
-                    <th class="nombre-column">Nombres</th>
-                    <th class="calificacion-column">Presencia</th>
-                    <th class="calificacion-column">Vocalización</th>
-                    <th class="calificacion-column">Ritmo</th>
-                    <th class="calificacion-column">Acoplamiento</th>
-                    <th class="calificacion-column">Escénico</th>
-                    <th class="total-column">Total</th>
-                </tr>
+            <tr>
+                <th class="nombre-column">Nombres</th>
+                <th class="calificacion-column">Presencia</th>
+                <th class="calificacion-column">Vocalización</th>
+                <th class="calificacion-column">Ritmo</th>
+                <th class="calificacion-column">Acoplamiento</th>
+                <th class="calificacion-column">Escénico</th>
+                <th class="total-column">Total</th>
+            </tr>
             </thead>
             <tbody>
-                {% for participant in judge.participants %}
-                    <tr>
-                        <td class="nombre-column">{{ participant.participant }}</td>
-                        <td>{{ participant.presence }}</td>
-                        <td>{{ participant.vocalization }}</td>
-                        <td>{{ participant.rhythm }}</td>
-                        <td>{{ participant.coupling }}</td>
-                        <td>{{ participant.stage_performance }}</td>
-                        <td class="total-column">{{ participant.total_score }}</td>
-                    </tr>
-                {% endfor %}
+            {% for participant in judge.participants %}
+                <tr>
+                    <td class="nombre-column">{{ participant.participant }}</td>
+                    <td>{{ participant.presence }}</td>
+                    <td>{{ participant.vocalization }}</td>
+                    <td>{{ participant.rhythm }}</td>
+                    <td>{{ participant.coupling }}</td>
+                    <td>{{ participant.stage_performance }}</td>
+                    <td class="total-column">{{ participant.total }}</td>
+                </tr>
+            {% endfor %}
             </tbody>
         </table>
 

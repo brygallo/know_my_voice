@@ -135,7 +135,7 @@ TIME_ZONE = "UTC"
 
 # Static files
 STATIC_URL = "static/"
-# STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]

@@ -1,8 +1,11 @@
+import os
 import random
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
+from django.templatetags.static import static
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
@@ -231,6 +234,8 @@ class OrderPDFView(BasePDFView):
         rows = RoundContextService.get_order_context(round_instance)
         context['table_rows'] = rows
         context['round'] = round_instance
+        request = self.request
+        context['logo_url'] = request.build_absolute_uri(static('img/logo.png'))
         return context
 
 
@@ -246,6 +251,9 @@ class ResultsPDFView(BasePDFView):
         context['round'] = round_instance
         context['table_header'] = header
         context['table_rows'] = rows
+
+        request = self.request
+        context['logo_url'] = request.build_absolute_uri(static('img/logo.png'))
         return context
 
     def get(self, request, *args, **kwargs):
@@ -312,7 +320,15 @@ class MinutesPDFView(BasePDFView):
         context['judges'] = judges_info
         context['round'] = round_instance
 
+
+        request = self.request
+        context['logo_url'] = request.build_absolute_uri(static('img/logo.png'))
+
         return context
+
+    def render_to_response(self, context, **response_kwargs):
+        response_kwargs["base_url"] = self.request.build_absolute_uri("/")
+        return super().render_to_response(context, **response_kwargs)
 
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
