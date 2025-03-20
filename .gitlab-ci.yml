@@ -33,6 +33,11 @@ deploy:
     - chmod 400 ~/.ssh/id_rsa
     - ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts || true
   script:
+    # Prueba de conexión SSH antes de continuar
+    - echo "🔹 Probando conexión SSH con el servidor..."
+    - ssh -o StrictHostKeyChecking=no -v $SSH_USER@$SSH_HOST "echo '✅ Conexión SSH exitosa'"
+
+    # Si la conexión es exitosa, continuar con el despliegue
     - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "cd /home/$SSH_USER/know_my_voice && git pull origin main"
     - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "chmod +x /home/$SSH_USER/know_my_voice/setup.sh"
     - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "/home/$SSH_USER/know_my_voice/setup.sh"
