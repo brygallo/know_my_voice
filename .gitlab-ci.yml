@@ -30,15 +30,15 @@ deploy:
     - apk add --no-cache openssh-client
     - mkdir -p ~/.ssh
     - echo "$SSH_KEY" | tr -d '\r' > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
-    - ssh-keyscan -H "$SSH_HOST" > ~/.ssh/known_hosts
+    - chmod 400 ~/.ssh/id_rsa
+    - ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts || true
   script:
-    - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST <<EOF
-      cd /home/$SSH_USER/know_my_voice
-      git pull origin main
-      chmod +x setup.sh
-      ./setup.sh
-      EOF
+    - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST << 'EOF'
+        cd /home/$SSH_USER/know_my_voice
+        git pull origin main
+        chmod +x setup.sh
+        ./setup.sh
+    EOF
     - ssh $SSH_USER@$SSH_HOST "docker pull $DOCKER_IMAGE:latest"
     - ssh $SSH_USER@$SSH_HOST "docker compose down || true"
     - ssh $SSH_USER@$SSH_HOST "docker compose up -d --force-recreate --no-deps web"
