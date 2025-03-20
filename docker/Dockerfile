@@ -1,24 +1,21 @@
-# Usa Python como base
+# Use Python as the base image
 FROM python:3.10
 
-# Configuración del entorno
+# Set environment variables
 ENV PYTHONUNBUFFERED=1
 
-# Define el directorio de trabajo
+# Set the working directory
 WORKDIR /app
 
-# Copia los archivos de requerimientos e instala dependencias
+# Copy requirements and install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copia el código de la aplicación
+# Copy the entire project
 COPY . .
 
-# Ejecutar `collectstatic` antes de iniciar Gunicorn
-RUN python manage.py collectstatic --noinput
-
-# Permisos de ejecución para el entrypoint
+# Set execution permissions for entrypoint.sh
 RUN chmod +x /app/docker/entrypoint.sh
 
-# Ejecuta el script de inicio
+# Start the container using entrypoint.sh
 CMD ["/app/docker/entrypoint.sh"]

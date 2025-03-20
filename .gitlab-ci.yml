@@ -1,8 +1,5 @@
 image: docker:latest
 
-services:
-  - docker:dind
-
 variables:
   DOCKER_IMAGE: "registry.gitlab.com/usuario/mi-proyecto"
 
@@ -11,7 +8,6 @@ stages:
   - deploy
 
 before_script:
-  - apk add --no-cache curl
   - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
 
 build:
@@ -26,6 +22,5 @@ deploy:
     - main
   script:
     - docker pull $DOCKER_IMAGE:latest
-    - docker stop mi-proyecto || true
-    - docker rm mi-proyecto || true
-    - docker run -d --name mi-proyecto -p 8000:8000 --network=host $DOCKER_IMAGE:latest
+    - docker-compose down || true
+    - docker-compose up -d --force-recreate --no-deps web
