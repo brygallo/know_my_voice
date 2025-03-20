@@ -33,13 +33,31 @@ deploy:
     - chmod 400 ~/.ssh/id_rsa
     - ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts || true
   script:
-    # Prueba de conexión SSH antes de continuar
+    # 🔹 Prueba de conexión SSH antes de continuar
     - echo "🔹 Probando conexión SSH con el servidor..."
-    - ssh -o StrictHostKeyChecking=no -v $SSH_USER@$SSH_HOST "echo '✅ Conexión SSH exitosa'"
+    - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "echo '✅ Conexión SSH exitosa'"
 
+    # 🔹 Definir variables en el servidor antes de ejecutar setup.sh
+    - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "export DJANGO_SECRET_KEY='$DJANGO_SECRET_KEY'"
+    - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "export DJANGO_DEBUG='$DJANGO_DEBUG'"
+    - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "export DJANGO_ALLOWED_HOSTS='$DJANGO_ALLOWED_HOSTS'"
+    - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "export DATABASE_NAME='$DATABASE_NAME'"
+    - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "export DATABASE_USER='$DATABASE_USER'"
+    - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "export DATABASE_PASSWORD='$DATABASE_PASSWORD'"
+    - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "export DATABASE_HOST='$DATABASE_HOST'"
+    - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "export DATABASE_PORT='$DATABASE_PORT'"
+
+    # 🔹 Actualizar el código y generar .env
     - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "cd /home/$SSH_USER/know_my_voice && git pull origin main"
     - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "chmod +x /home/$SSH_USER/know_my_voice/setup.sh"
     - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "/home/$SSH_USER/know_my_voice/setup.sh"
+
+    # 🔹 Descargar la última imagen de Docker
     - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "docker pull $DOCKER_IMAGE:latest"
-    - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "docker-compose down || true"
-    - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "docker-compose up -d --force-recreate --no-deps web"
+
+    # 🔹 Verificar qué comando de Docker Compose está disponible
+    - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "docker-compose version || docker compose version"
+
+    # 🔹 Detener y reiniciar el contenedor con Docker Compose
+    - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "docker-compose down || docker compose down || true"
+    - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "docker-compose up -d --force-recreate --no-deps web || docker compose up -d --force-recreate --no-deps web"
