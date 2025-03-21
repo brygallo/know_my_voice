@@ -34,7 +34,7 @@ deploy:
     - ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts || true
 
   script:
-    # 🔹 Prueba de conexión SSH
+    # 🔹 Probar conexión SSH
     - echo "🔹 Probando conexión SSH con el servidor..."
     - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "echo '✅ Conexión SSH exitosa'"
 
@@ -45,23 +45,37 @@ deploy:
         chmod +x setup.sh
       "
 
-    # 🔹 Ejecutar setup.sh con las variables de entorno exportadas correctamente
+    # 🔹 Crear .env pasando variables inline
     - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "
-        export DJANGO_SECRET_KEY='$DJANGO_SECRET_KEY' &&
-        export DJANGO_DEBUG='$DJANGO_DEBUG' &&
-        export DJANGO_ALLOWED_HOSTS='$DJANGO_ALLOWED_HOSTS' &&
-        export DATABASE_NAME='$DATABASE_NAME' &&
-        export DATABASE_USER='$DATABASE_USER' &&
-        export DATABASE_PASSWORD='$DATABASE_PASSWORD' &&
-        export DATABASE_HOST='$DATABASE_HOST' &&
-        export DATABASE_PORT='$DATABASE_PORT' &&
-        bash /home/$SSH_USER/know_my_voice/setup.sh
+        DJANGO_SECRET_KEY='$DJANGO_SECRET_KEY' \
+        DJANGO_DEBUG='$DJANGO_DEBUG' \
+        DJANGO_ALLOWED_HOSTS='$DJANGO_ALLOWED_HOSTS' \
+        DATABASE_NAME='$DATABASE_NAME' \
+        DATABASE_USER='$DATABASE_USER' \
+        DATABASE_PASSWORD='$DATABASE_PASSWORD' \
+        DATABASE_HOST='$DATABASE_HOST' \
+        DATABASE_PORT='$DATABASE_PORT' \
+        bash -c 'source /dev/stdin' <<'EOF'
+          echo \"Generating .env file...\"
+          cat <<EOT > /home/$SSH_USER/know_my_voice/.env
+# Django settings
+DJANGO_SECRET_KEY=\$DJANGO_SECRET_KEY
+DJANGO_DEBUG=\$DJANGO_DEBUG
+DJANGO_ALLOWED_HOSTS=\$DJANGO_ALLOWED_HOSTS
+
+# Database settings
+DATABASE_NAME=\$DATABASE_NAME
+DATABASE_USER=\$DATABASE_USER
+DATABASE_PASSWORD=\$DATABASE_PASSWORD
+DATABASE_HOST=\$DATABASE_HOST
+DATABASE_PORT=\$DATABASE_PORT
+EOT
+          echo \".env file generated successfully!\"
+EOF
       "
 
     # 🔹 Descargar imagen actualizada del contenedor
-    - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "
-        docker pull $DOCKER_IMAGE:latest
-      "
+    - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "docker pull $DOCKER_IMAGE:latest"
 
     # 🔹 Reiniciar servicios con docker-compose
     - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "
