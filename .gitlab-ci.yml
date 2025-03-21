@@ -66,9 +66,9 @@ deploy:
         docker pull $DOCKER_IMAGE:latest
       "
 
-    # 🔹 Reiniciar servicios con docker-compose (solo con guion)
+    # 🔹 Reiniciar servicios con docker-compose (web + db)
     - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "
         cd /home/$SSH_USER/know_my_voice &&
         docker-compose down || true &&
-        docker-compose up -d --force-recreate --no-deps web
+        docker-compose up -d --force-recreate
       "
