@@ -40,8 +40,9 @@ deploy:
 
     # 🔹 Clonar o actualizar código
     - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "
-        cd /home/$SSH_USER/know_my_voice &&
-        git pull origin main
+      cd /home/$SSH_USER/know_my_voice &&
+      git reset --hard HEAD &&
+      git pull origin main
       "
 
     # 🔹 Generar archivo .env inline
