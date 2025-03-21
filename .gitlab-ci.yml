@@ -41,31 +41,34 @@ deploy:
     # 🔹 Clonar o actualizar código
     - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "
         cd /home/$SSH_USER/know_my_voice &&
-        git pull origin main &&
+        git pull origin main
       "
 
-    # 🔹 Generar .env con las variables del CI
-    - |
-      ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "
-        echo 'Generating .env file...' &&
-        echo \"DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY\" > /home/$SSH_USER/know_my_voice/.env &&
-        echo \"DJANGO_DEBUG=$DJANGO_DEBUG\" >> /home/$SSH_USER/know_my_voice/.env &&
-        echo \"DJANGO_ALLOWED_HOSTS=$DJANGO_ALLOWED_HOSTS\" >> /home/$SSH_USER/know_my_voice/.env &&
-        echo \"DATABASE_NAME=$DATABASE_NAME\" >> /home/$SSH_USER/know_my_voice/.env &&
-        echo \"DATABASE_USER=$DATABASE_USER\" >> /home/$SSH_USER/know_my_voice/.env &&
-        echo \"DATABASE_PASSWORD=$DATABASE_PASSWORD\" >> /home/$SSH_USER/know_my_voice/.env &&
-        echo \"DATABASE_HOST=$DATABASE_HOST\" >> /home/$SSH_USER/know_my_voice/.env &&
-        echo \"DATABASE_PORT=$DATABASE_PORT\" >> /home/$SSH_USER/know_my_voice/.env &&
-        echo '.env file generated successfully!'
-      "
-
-    # 🔹 Descargar imagen actualizada
-    - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "docker pull $DOCKER_IMAGE:latest"
-
-    # 🔹 Reiniciar servicios con docker-compose
-    - |
-      ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "
+    # 🔹 Generar archivo .env inline
+    - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "
         cd /home/$SSH_USER/know_my_voice &&
-        (docker-compose down || docker compose down || true) &&
-        (docker-compose up -d --force-recreate --no-deps web || docker compose up -d --force-recreate --no-deps web)
+        echo \"# Django settings\" > .env &&
+        echo \"DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY\" >> .env &&
+        echo \"DJANGO_DEBUG=$DJANGO_DEBUG\" >> .env &&
+        echo \"DJANGO_ALLOWED_HOSTS=$DJANGO_ALLOWED_HOSTS\" >> .env &&
+        echo \"\" >> .env &&
+        echo \"# Database settings\" >> .env &&
+        echo \"DATABASE_NAME=$DATABASE_NAME\" >> .env &&
+        echo \"DATABASE_USER=$DATABASE_USER\" >> .env &&
+        echo \"DATABASE_PASSWORD=$DATABASE_PASSWORD\" >> .env &&
+        echo \"DATABASE_HOST=$DATABASE_HOST\" >> .env &&
+        echo \"DATABASE_PORT=$DATABASE_PORT\" >> .env &&
+        echo \".env file generated!\"
+      "
+
+    # 🔹 Descargar imagen actualizada del contenedor
+    - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "
+        docker pull $DOCKER_IMAGE:latest
+      "
+
+    # 🔹 Reiniciar servicios con docker-compose (solo con guion)
+    - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "
+        cd /home/$SSH_USER/know_my_voice &&
+        docker-compose down || true &&
+        docker-compose up -d --force-recreate --no-deps web
       "
