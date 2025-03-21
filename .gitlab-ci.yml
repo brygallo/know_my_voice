@@ -42,7 +42,6 @@ deploy:
     - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "
         cd /home/$SSH_USER/know_my_voice &&
         git pull origin main &&
-        chmod +x setup.sh
       "
 
     # 🔹 Generar .env con las variables del CI
