@@ -7,15 +7,15 @@ ENV PYTHONUNBUFFERED=1
 # Set the working directory
 WORKDIR /app
 
-# Instala PostgreSQL Client (para usar psql)
+# 🛠️ Instala el cliente de PostgreSQL
 RUN apt-get update && apt-get install -y postgresql-client
 
-# Copy requirements and install dependencies
+# Instala dependencias Python
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the entire project
+# Copia el resto del código
 COPY . .
 
-# Start the container using entrypoint.sh
+# Inicia el contenedor ejecutando el script de arranque
 CMD ["sh", "-c", "chmod +x /app/docker/entrypoint.sh && /app/docker/entrypoint.sh"]
