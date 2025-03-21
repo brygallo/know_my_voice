@@ -24,9 +24,9 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile
-      restart: always
+    restart: always
     container_name: django_app
-    # Solución para evitar el error de permisos con entrypoint.sh
+
     command: ["sh", "-c", "chmod +x /app/docker/entrypoint.sh && /app/docker/entrypoint.sh"]
     volumes:
       - .:/app
