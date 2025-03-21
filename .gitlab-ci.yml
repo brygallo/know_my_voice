@@ -55,9 +55,9 @@ deploy:
     # 🔹 Descargar la última imagen de Docker
     - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "docker pull $DOCKER_IMAGE:latest"
 
-    # 🔹 Verificar qué comando de Docker Compose está disponible
-    - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "docker-compose version || docker compose version"
+    # 🔹 Verificar versión de docker-compose
+    - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "docker-compose version"
 
-    # 🔹 Detener y reiniciar el contenedor con Docker Compose (con `cd` al proyecto)
-    - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "cd /home/$SSH_USER/know_my_voice && docker-compose down || cd /home/$SSH_USER/know_my_voice && docker compose down || true"
-    - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "cd /home/$SSH_USER/know_my_voice && docker-compose up -d --force-recreate --no-deps web || cd /home/$SSH_USER/know_my_voice && docker compose up -d --force-recreate --no-deps web"
+    # 🔹 Detener y reiniciar el contenedor con Docker Compose
+    - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "cd /home/$SSH_USER/know_my_voice && docker-compose down || true"
+    - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "cd /home/$SSH_USER/know_my_voice && docker-compose up -d --force-recreate --no-deps web"
