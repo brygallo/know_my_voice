@@ -27,6 +27,7 @@ deploy:
   only:
     - main
   before_script:
+    # 📦 Prepare SSH for remote access
     - apk add --no-cache openssh-client
     - mkdir -p ~/.ssh
     - echo "$SSH_KEY" | tr -d '\r' > ~/.ssh/id_rsa
@@ -34,18 +35,18 @@ deploy:
     - ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts || true
 
   script:
-    # 🔹 Prueba de conexión SSH
-    - echo "🔹 Probando conexión SSH con el servidor..."
-    - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "echo '✅ Conexión SSH exitosa'"
+    # ✅ Test SSH connection to the remote server
+    - echo "🔹 Testing SSH connection..."
+    - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "echo '✅ SSH connection successful'"
 
-    # 🔹 Clonar o actualizar código
+    # 🔄 Pull latest code on the remote server
     - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "
-      cd /home/$SSH_USER/know_my_voice &&
-      git reset --hard HEAD &&
-      git pull origin main
+        cd /home/$SSH_USER/know_my_voice &&
+        git reset --hard HEAD &&
+        git pull origin main
       "
 
-    # 🔹 Generar archivo .env inline
+    # 🛠️ Generate the .env file dynamically
     - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "
         cd /home/$SSH_USER/know_my_voice &&
         echo \"# Django settings\" > .env &&
@@ -62,14 +63,15 @@ deploy:
         echo \".env file generated!\"
       "
 
-    # 🔹 Descargar imagen actualizada del contenedor
+    # ⬇️ Pull the latest Docker image
     - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "
         docker pull $DOCKER_IMAGE:latest
       "
 
-    # 🔹 Reiniciar servicios con docker-compose (web + db)
+    # 🚀 Restart Docker services safely without removing volumes
     - ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "
         cd /home/$SSH_USER/know_my_voice &&
-        docker-compose down || true &&
-        docker-compose up -d --force-recreate
+        docker-compose stop || true &&
+        docker-compose pull &&
+        docker-compose up -d --build --remove-orphans
       "
